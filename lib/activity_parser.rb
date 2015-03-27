@@ -11,13 +11,27 @@ class ActivityParser
   def get_events
     string = ""
     @feed_data.each do |obj|
-      string << "#{obj["objects"]["creator"]["text"]} "
+      if get_url_for_creator(obj["objects"]["creator"]["id"])
+        string << "[#{obj["objects"]["creator"]["text"]}]"
+      else
+        string << "#{obj["objects"]["creator"]["text"]} "
+      end
       string << "#{get_url_for_creator(obj["objects"]["creator"]["id"])}"
-      string << "added #{obj["objects"]["address"]["text"]} "
+
+      if get_url_for_address(obj["objects"]["address"]["id"])
+        string << "added [#{obj["objects"]["address"]["text"]}]"
+      else
+        string << "added #{obj["objects"]["address"]["text"]} "
+      end
       string << "#{get_url_for_address(obj["objects"]["address"]["id"])}"
-      string << "to #{obj["objects"]["patient"]["text"]}"
-      string << " #{get_url_for_patient(obj["objects"]["patient"]["id"])}"
-      string << "\n"
+
+      if get_url_for_patient(obj["objects"]["patient"]["id"])
+        string << "to [#{obj["objects"]["patient"]["text"]}]"
+      else
+        string << "to #{obj["objects"]["patient"]["text"]}"
+      end
+      string << "#{get_url_for_patient(obj["objects"]["patient"]["id"])}"
+      string << "\n\n"
     end
     string
   end
