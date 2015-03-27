@@ -2,10 +2,9 @@ require "json"
 require "pry"
 
 class ActivityParser
-  def initialize
-    p "initializing"
-    @feed_data = JSON.parse(File.open("data/feed_entries.json").read)
-    @object_data = JSON.parse(File.open("data/objects.json").read)
+  def initialize(feed_data, object_data)
+    @feed_data = feed_data
+    @object_data = object_data
   end
 
   def get_events
@@ -17,7 +16,7 @@ class ActivityParser
         string << "#{obj["objects"]["creator"]["text"]} "
       end
       string << "#{get_url_for_creator(obj["objects"]["creator"]["id"])}"
-
+      
       if get_url_for_address(obj["objects"]["address"]["id"])
         string << "added [#{obj["objects"]["address"]["text"]}]"
       else
@@ -59,5 +58,8 @@ class ActivityParser
   end
 end
 
-test = ActivityParser.new
+feed_data = JSON.parse(File.open("data/feed_entries.json").read)
+object_data = JSON.parse(File.open("data/objects.json").read)
+
+test = ActivityParser.new(feed_data, object_data)
 test.write_data
